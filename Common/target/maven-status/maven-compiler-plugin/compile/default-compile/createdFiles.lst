@@ -1,8 +1,8 @@
-dk/sdu/cbse/common/services/IGamePluginService.class
-dk/sdu/cbse/common/EntityType.class
+dk\sdu\cbse\common\EntityType.class
+dk\sdu\cbse\common\services\IPostEntityProcessorService.class
+dk\sdu\cbse\common\Entity.class
 module-info.class
-dk/sdu/cbse/common/World.class
-dk/sdu/cbse/common/Entity.class
-dk/sdu/cbse/common/services/IEntityProcessingService.class
-dk/sdu/cbse/common/services/IPostEntityProcessorService.class
-dk/sdu/cbse/common/GameData.class
+dk\sdu\cbse\common\services\IGamePluginService.class
+dk\sdu\cbse\common\GameData.class
+dk\sdu\cbse\common\services\IEntityProcessingService.class
+dk\sdu\cbse\common\World.class
