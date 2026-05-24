@@ -5,9 +5,11 @@ import dk.sdu.cbse.common.EntityType;
 import dk.sdu.cbse.common.GameData;
 import dk.sdu.cbse.common.World;
 import dk.sdu.cbse.common.services.IEntityProcessingService;
+import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
+@Component
 public class EnemyControlSystem implements IEntityProcessingService {
 
     private static final float SHOOT_INTERVAL  = 2.0f;

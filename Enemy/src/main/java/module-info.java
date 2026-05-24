@@ -1,9 +1,6 @@
 module Enemy {
     requires Common;
+    requires spring.context;
 
-    provides dk.sdu.cbse.common.services.IGamePluginService
-        with dk.sdu.cbse.enemy.EnemyPlugin;
-
-    provides dk.sdu.cbse.common.services.IEntityProcessingService
-        with dk.sdu.cbse.enemy.EnemyControlSystem;
+    opens dk.sdu.cbse.enemy to spring.core, spring.beans, spring.context;
 }

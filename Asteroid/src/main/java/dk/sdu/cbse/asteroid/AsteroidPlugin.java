@@ -5,9 +5,11 @@ import dk.sdu.cbse.common.EntityType;
 import dk.sdu.cbse.common.GameData;
 import dk.sdu.cbse.common.World;
 import dk.sdu.cbse.common.services.IGamePluginService;
+import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
+@Component
 public class AsteroidPlugin implements IGamePluginService {
 
     static final float LARGE_RADIUS  = 40f;

@@ -4,7 +4,9 @@ import dk.sdu.cbse.common.EntityType;
 import dk.sdu.cbse.common.GameData;
 import dk.sdu.cbse.common.World;
 import dk.sdu.cbse.common.services.IGamePluginService;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BulletPlugin implements IGamePluginService {
 
     @Override

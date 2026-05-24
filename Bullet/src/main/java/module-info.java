@@ -1,9 +1,6 @@
 module Bullet {
     requires Common;
+    requires spring.context;
 
-    provides dk.sdu.cbse.common.services.IGamePluginService
-        with dk.sdu.cbse.bullet.BulletPlugin;
-
-    provides dk.sdu.cbse.common.services.IEntityProcessingService
-        with dk.sdu.cbse.bullet.BulletControlSystem;
+    opens dk.sdu.cbse.bullet to spring.core, spring.beans, spring.context;
 }

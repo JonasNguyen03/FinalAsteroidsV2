@@ -5,10 +5,12 @@ import dk.sdu.cbse.common.EntityType;
 import dk.sdu.cbse.common.GameData;
 import dk.sdu.cbse.common.World;
 import dk.sdu.cbse.common.services.IPostEntityProcessorService;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class CollisionSystem implements IPostEntityProcessorService {
 
     @Override

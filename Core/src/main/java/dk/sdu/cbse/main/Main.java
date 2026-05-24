@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main extends Application {
 
@@ -19,13 +20,20 @@ public class Main extends Application {
         Pane   root   = new Pane(canvas);
         Scene  scene  = new Scene(root, WIDTH, HEIGHT);
 
-        GameData gameData = new GameData(WIDTH, HEIGHT);
-        World    world    = new World();
+        // Boot the Spring container — discovers all @Component classes
+        AnnotationConfigApplicationContext ctx =
+                new AnnotationConfigApplicationContext(AppConfig.class);
+
+        // GameData and World come from Spring (@Bean in AppConfig)
+        GameData gameData = ctx.getBean(GameData.class);
+        World    world    = ctx.getBean(World.class);
 
         scene.setOnKeyPressed (e -> gameData.getKeys().add(e.getCode().toString()));
         scene.setOnKeyReleased(e -> gameData.getKeys().remove(e.getCode().toString()));
 
-        Game game = new Game(canvas.getGraphicsContext2D(), gameData, world);
+        // Game is a @Component — Spring injected all its services
+        Game game = ctx.getBean(Game.class);
+        game.setGc(canvas.getGraphicsContext2D());
         game.start();
 
         primaryStage.setTitle("AsteroidsFX – Jonas Nguyen");

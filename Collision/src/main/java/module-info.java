@@ -1,6 +1,6 @@
 module Collision {
     requires Common;
+    requires spring.context;
 
-    provides dk.sdu.cbse.common.services.IPostEntityProcessorService
-        with dk.sdu.cbse.collision.CollisionSystem;
+    opens dk.sdu.cbse.collision to spring.core, spring.beans, spring.context;
 }

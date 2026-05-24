@@ -5,7 +5,9 @@ import dk.sdu.cbse.common.EntityType;
 import dk.sdu.cbse.common.GameData;
 import dk.sdu.cbse.common.World;
 import dk.sdu.cbse.common.services.IEntityProcessingService;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PlayerControlSystem implements IEntityProcessingService {
 
     private static final float ROT_SPEED    = 180f;

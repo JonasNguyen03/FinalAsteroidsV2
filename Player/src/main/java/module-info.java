@@ -1,9 +1,6 @@
 module Player {
     requires Common;
+    requires spring.context;
 
-    provides dk.sdu.cbse.common.services.IGamePluginService
-        with dk.sdu.cbse.player.PlayerPlugin;
-
-    provides dk.sdu.cbse.common.services.IEntityProcessingService
-        with dk.sdu.cbse.player.PlayerControlSystem;
+    opens dk.sdu.cbse.player to spring.core, spring.beans, spring.context;
 }
