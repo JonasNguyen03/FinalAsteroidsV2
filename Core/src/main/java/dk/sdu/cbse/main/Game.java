@@ -22,8 +22,8 @@ public class Game extends AnimationTimer {
     private final GameData        gameData;
     private final World           world;
 
-    private final List<IGamePluginService>       plugins    = new ArrayList<>();
-    private final List<IEntityProcessingService> processors = new ArrayList<>();
+    private final List<IGamePluginService>          plugins        = new ArrayList<>();
+    private final List<IEntityProcessingService>    processors     = new ArrayList<>();
     private final List<IPostEntityProcessorService> postProcessors = new ArrayList<>();
 
     private long lastNanos = 0;
@@ -33,17 +33,16 @@ public class Game extends AnimationTimer {
         this.gameData = gameData;
         this.world    = world;
 
-        for (IGamePluginService p : ServiceLoader.load(IGamePluginService.class)) {
-            plugins.add(p);
-            p.start(gameData, world);
-        }
+        // pluginLayer includes boot layer as ancestor, so one load finds everything
+        ModuleLayer pluginLayer = PluginLoader.loadPlugins("plugins");
 
-        for (IEntityProcessingService ps : ServiceLoader.load(IEntityProcessingService.class)) {
-            processors.add(ps);
+        ServiceLoader.load(pluginLayer, IGamePluginService.class).forEach(plugins::add);
+        ServiceLoader.load(pluginLayer, IEntityProcessingService.class).forEach(processors::add);
+        ServiceLoader.load(pluginLayer, IPostEntityProcessorService.class).forEach(postProcessors::add);
+
+        for (IGamePluginService plugin : plugins) {
+            plugin.start(gameData, world);
         }
-        
-        for (IPostEntityProcessorService ps : ServiceLoader.load(IPostEntityProcessorService.class))
-            postProcessors.add(ps);
     }
 
     @Override
@@ -57,7 +56,9 @@ public class Game extends AnimationTimer {
         for (IEntityProcessingService ps : processors) {
             ps.process(gameData, world);
         }
-        for (IPostEntityProcessorService ps : postProcessors) ps.process(gameData, world);
+        for (IPostEntityProcessorService ps : postProcessors) {
+            ps.process(gameData, world);
+        }
 
         render();
     }
@@ -79,19 +80,18 @@ public class Game extends AnimationTimer {
         gc.rotate(e.getRotation());
 
         Color color = switch (e.getType()) {
-            case PLAYER -> Color.WHITE;
-            case ENEMY  -> Color.RED;
+            case PLAYER       -> Color.WHITE;
+            case ENEMY        -> Color.RED;
             case ENEMY_BULLET -> Color.RED;
-            case BULLET -> Color.GREEN;
-            case ASTEROID -> Color.LIGHTGRAY;
+            case BULLET       -> Color.GREEN;
+            case ASTEROID     -> Color.LIGHTGRAY;
         };
 
         if (e.getType() == EntityType.BULLET || e.getType() == EntityType.ENEMY_BULLET) {
             gc.setFill(color);
             float r = e.getRadius();
             gc.fillOval(-r, -r, r * 2, r * 2);
-        }
-        else if (e.getPolygon() != null) {
+        } else if (e.getPolygon() != null) {
             float[] poly = e.getPolygon();
             int n = poly.length / 2;
             double[] xs = new double[n];
@@ -111,6 +111,6 @@ public class Game extends AnimationTimer {
     private void drawHUD() {
         gc.setFill(Color.LIGHTGRAY);
         gc.setFont(Font.font("Monospaced", 13));
-        gc.fillText("\u2190 \u2192 Rotate   \u2191 Thrust   SPACE Shoot", 10, 20);
-    }
+        gc.fillText("A D Rotate   W Thrust   SPACE Shoot", 10, 20);
+    } 
 }

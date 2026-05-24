@@ -1,0 +1,13 @@
+# run.ps1
+$mods = "mods-mvn"
+New-Item -Force -ItemType Directory $mods | Out-Null
+foreach ($mod in @("Common","Core","Bullet","Enemy","Player","Collision")) {
+    Copy-Item "$mod\target\$mod-1.0-SNAPSHOT.jar" $mods -Force
+}
+$m2 = "$env:USERPROFILE\.m2\repository\org\openjfx"
+$fxV = "21.0.2"
+foreach ($fx in @("javafx-base","javafx-graphics","javafx-controls")) {
+    Get-ChildItem "$m2\$fx\$fxV\*.jar" -ErrorAction SilentlyContinue |
+        Copy-Item -Destination $mods -Force
+}
+mvn exec:exec

@@ -20,12 +20,12 @@ public class PlayerControlSystem implements IEntityProcessingService {
         for (Entity player : world.getEntities(EntityType.PLAYER)) {
             float dt = gd.getDeltaTime();
 
-            if (gd.isPressed("LEFT"))
+            if (gd.isPressed("A"))
                 player.setRotation(player.getRotation() - ROT_SPEED * dt);
-            if (gd.isPressed("RIGHT"))
+            if (gd.isPressed("D"))
                 player.setRotation(player.getRotation() + ROT_SPEED * dt);
 
-            if (gd.isPressed("UP")) {
+            if (gd.isPressed("W")) {
                 double rad = Math.toRadians(player.getRotation() - 90);
                 player.setDx(player.getDx() + (float)(Math.cos(rad) * THRUST * dt));
                 player.setDy(player.getDy() + (float)(Math.sin(rad) * THRUST * dt));
@@ -67,9 +67,9 @@ public class PlayerControlSystem implements IEntityProcessingService {
     }
 
     private void wrapAround(Entity e, GameData gd) {
-        if (e.getX() < 0)                   e.setX(gd.getDisplayWidth());
-        if (e.getX() > gd.getDisplayWidth()) e.setX(0);
-        if (e.getY() < 0)                   e.setY(gd.getDisplayHeight());
+        if (e.getX() < 0)                    e.setX(gd.getDisplayWidth());
+        if (e.getX() > gd.getDisplayWidth())  e.setX(0);
+        if (e.getY() < 0)                    e.setY(gd.getDisplayHeight());
         if (e.getY() > gd.getDisplayHeight()) e.setY(0);
     }
 }

@@ -22,8 +22,7 @@ public interface IPostEntityProcessorService {
      *   The world's entity collection is not being modified concurrently
      *
      * Postconditions:
-     *   All collision pairs have been evaluated according to the
-     *       collision matrix:
+     *   All collision pairs have been evaluated according to the collision matrix:
      *       BULLET vs ASTEROID — both removed; two smaller child asteroids spawned if parent radius >= 10
      *       BULLET vs ENEMY — both removed
      *       ENEMY_BULLET vs PLAYER — both removed
