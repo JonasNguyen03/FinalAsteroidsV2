@@ -1,24 +1,18 @@
-﻿# Maven
+# Maven build output
 target/
-*.jar
+*.class
 
-# IntelliJ IDEA
+# IDE files
 .idea/
 *.iml
 *.iws
 *.ipr
-out/
+.rider/
 
-# Eclipse
-.classpath
-.project
-.settings/
-
-# VS Code
-.vscode/
-
-# macOS
-.DS_Store
-
-# Runtime module jars
+# Runtime folders (generated at build time, not source)
 mods-mvn/
+plugins/
+
+# OS files
+.DS_Store
+Thumbs.db
