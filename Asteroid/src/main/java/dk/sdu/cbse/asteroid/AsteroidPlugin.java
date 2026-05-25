@@ -13,7 +13,7 @@ import java.util.Random;
 public class AsteroidPlugin implements IGamePluginService {
 
     static final float LARGE_RADIUS  = 40f;
-    private static final int INITIAL_COUNT = 5;
+    private static final int INITIAL_COUNT = 3;
 
     @Override
     public void start(GameData gameData, World world) {
@@ -31,7 +31,7 @@ public class AsteroidPlugin implements IGamePluginService {
         } while (Math.hypot(x - gd.getDisplayWidth() / 2f,
                             y - gd.getDisplayHeight() / 2f) < 150);
 
-        float  speed = 30f + rnd.nextFloat() * 70f;
+        float  speed = 20f + rnd.nextFloat() * 30f;
         double angle = rnd.nextDouble() * Math.PI * 2;
 
         Entity a = new Entity();

@@ -6,12 +6,29 @@ import dk.sdu.cbse.common.GameData;
 import dk.sdu.cbse.common.World;
 import dk.sdu.cbse.common.services.IPostEntityProcessorService;
 import org.springframework.stereotype.Component;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class CollisionSystem implements IPostEntityProcessorService {
+
+private final HttpClient httpClient = HttpClient.newHttpClient();
+    
+    private void reportScore(GameData gameData, long points) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/score?point=" + points))
+                .GET()
+                .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            gameData.setScore(Long.parseLong(response.body()));
+        } catch (Exception e) {}
+    }
 
     @Override
     public void process(GameData gd, World world) {
@@ -42,6 +59,7 @@ public class CollisionSystem implements IPostEntityProcessorService {
                 if (collides(bullet, asteroid)) {
                     toRemove.add(bullet);
                     toRemove.add(asteroid);
+                    reportScore(gd, 10);
                     spawnChildren(asteroid, toAdd);
                     break;
                 }
@@ -56,6 +74,7 @@ public class CollisionSystem implements IPostEntityProcessorService {
                 if (collides(bullet, enemy)) {
                     toRemove.add(bullet);
                     toRemove.add(enemy);
+                    reportScore(gd, 20);
                     break;
                 }
             }

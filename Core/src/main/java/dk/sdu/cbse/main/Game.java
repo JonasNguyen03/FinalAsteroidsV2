@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import javafx.scene.image.Image;
 import java.util.Objects;
 import java.io.IOException;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,6 @@ public class Game extends AnimationTimer {
         this.gameData       = gameData;
         this.world          = world;
 
-        // Asteroid lives in the plugin layer — still loaded via PluginLoader
         ModuleLayer pluginLayer = PluginLoader.loadPlugins("plugins");
         ServiceLoader.load(pluginLayer, IGamePluginService.class)
                 .forEach(this.plugins::add);
@@ -67,7 +68,6 @@ public class Game extends AnimationTimer {
         }
     }
 
-    /** Called by Main after Spring creates the bean, to hand over the canvas context. */
     public void setGc(GraphicsContext gc) {
         this.gc = gc;
     }
@@ -75,15 +75,65 @@ public class Game extends AnimationTimer {
     @Override
     public void handle(long now) {
         if (lastNanos == 0) { lastNanos = now; return; }
-
+    
         float dt = Math.min((now - lastNanos) / 1_000_000_000f, 0.05f);
         lastNanos = now;
         gameData.setDeltaTime(dt);
-
-        for (IEntityProcessingService ps : processors)     ps.process(gameData, world);
+    
+        if (gameData.isGameOver()) {
+            drawGameOver();
+            if (gameData.isPressed("R")) {
+                restart();
+            }
+            return;
+        }
+    
+        if (world.getEntities(EntityType.PLAYER).isEmpty()) {
+            gameData.setGameOver(true);
+            return;
+        }
+    
+        for (IEntityProcessingService ps : processors)        ps.process(gameData, world);
         for (IPostEntityProcessorService ps : postProcessors) ps.process(gameData, world);
-
+    
         render();
+    }
+    
+    private void drawGameOver() {
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, gameData.getDisplayWidth(), gameData.getDisplayHeight());
+    
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font("Monospaced", FontWeight.BOLD, 48));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("GAME OVER", gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2 - 40);
+    
+        gc.setFont(Font.font("Monospaced", 28));
+        gc.fillText("Score: " + gameData.getScore(), gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2 + 10);
+    
+        gc.setFont(Font.font("Monospaced", 18));
+        gc.setFill(Color.LIGHTGRAY);
+        gc.fillText("Press R to Restart", gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2 + 60);
+    
+        gc.setTextAlign(TextAlignment.LEFT);
+    }
+    
+    private void restart() {
+        for (IGamePluginService plugin : plugins) {
+            plugin.stop(gameData, world);
+        }
+        new ArrayList<>(world.getEntities()).forEach(world::removeEntity);
+        gameData.setScore(0);
+        gameData.setGameOver(false);
+    
+        try {
+            new java.net.URI("http://localhost:8080/reset")
+                .toURL().openStream().close();
+        } catch (Exception ignored) {}
+    
+        for (IGamePluginService plugin : plugins) {
+            plugin.start(gameData, world);
+        }
     }
 
     private void render() {
@@ -103,7 +153,6 @@ public class Game extends AnimationTimer {
         float r = e.getRadius();
     
         if (e.getType() == EntityType.PLAYER) {
-            // PNG points upward; -90° aligns nose with game's 0° = facing right
             gc.rotate(0);
             gc.drawImage(playerImage, -r, -r, r * 2, r * 2);
     
@@ -133,6 +182,7 @@ public class Game extends AnimationTimer {
     private void drawHUD() {
         gc.setFill(Color.LIGHTGRAY);
         gc.setFont(Font.font("Monospaced", 13));
-        gc.fillText("A/D Rotate   W Thrust   SPACE Shoot", 10, 20);
+        gc.fillText("Score: " + gameData.getScore(), 10, 20);
+        gc.fillText("A/D Rotate   W Thrust   SPACE Shoot", 10, gameData.getDisplayHeight() - 10);
     }
 }

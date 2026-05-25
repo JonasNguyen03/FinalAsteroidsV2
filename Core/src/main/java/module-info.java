@@ -6,6 +6,7 @@ module Core {
     requires spring.context;
     requires spring.beans;
     requires spring.core;
+    requires java.net.http;
 
     exports dk.sdu.cbse.main to javafx.graphics;
     opens dk.sdu.cbse.main to spring.core, spring.beans, spring.context, javafx.graphics;

@@ -14,8 +14,8 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
     private static final float SHOOT_INTERVAL  = 2.0f;
     private static final float DIR_INTERVAL    = 1.5f;
-    private static final float ENEMY_SPEED     = 80f;
-    private static final float BULLET_SPEED    = 260f;
+    private static final float ENEMY_SPEED     = 50f;
+    private static final float BULLET_SPEED    = 150f;
 
     private final Random rng = new Random();
 
